@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import OrgIdTable from './OrgIdTable';
-import OrigIdInput from './OrigIdInput';
+import OrigIdInput from '../components/OrigIdInput';
 import Filters from './Filters';
 
 class Debugger extends Component {
