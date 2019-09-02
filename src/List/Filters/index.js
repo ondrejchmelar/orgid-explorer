@@ -11,6 +11,7 @@ class Filters extends Component {
   render() {
     const { 
       startDate, endDate, onStartDateChange, onEndDateChange, onDirectoryChange, selectedDirectory,
+      onApply
     } = this.props;
     return (
       <Container className="mt-1">
@@ -22,7 +23,6 @@ class Filters extends Component {
             <Col md={2} className="align-self-center">
               <Dropdown
                 onSelect={onDirectoryChange}
-                block
               >
                 <Dropdown.Toggle variant="light" id="dropdown-basic">
                 {selectedDirectory}
@@ -61,7 +61,11 @@ class Filters extends Component {
               />
             </Col>
             <Col md={2} className="align-self-center">
-              <Button variant="secondry" type="submit" block>
+              <Button
+                onClick={onApply} 
+                variant="secondry" 
+                type="submit" 
+                block>
                   Apply
               </Button>
             </Col>

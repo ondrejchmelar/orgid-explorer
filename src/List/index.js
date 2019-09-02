@@ -1,20 +1,48 @@
 import React, { Component } from 'react';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import OrgIdTable from './OrgIdTable';
 import OrigIdInput from '../components/OrigIdInput';
 import Filters from './Filters';
+import { fields } from './mockedData';
+import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+import Container from '@windingtree/wt-ui-react/lib/components/layout/Container';
+// import config from '../config';
+
+const parseDate = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${year}-${month}-${day}`
+
+}
 
 class Debugger extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      inputValue: '',
       startDate: new Date(2019,0,1),
-      endDate: Date.now(),
-      selectedDirectory: 'HOTELS'
+      endDate: new Date(Date.now()),
+      selectedDirectory: 'HOTELS',
+      organizationsData: []
     };
-
   }
+
+  componentDidMount() {
+    fetch(`http://127.0.0.1:8008/organizations`)
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        const organizationsData = data.map(
+          ({address, name, city, segments, dateCreated}) => (
+            {address, name, city, segments, dateCreated}
+          ))
+        this.setState({ organizationsData })
+      });
+  }
+
   onStartDateChange = (date) => {
     this.setState({
       startDate: date
@@ -28,21 +56,60 @@ class Debugger extends Component {
   }
 
   onDirectoryChange = (eventKey) => {
-    console.log(eventKey)
     this.setState({
       selectedDirectory: eventKey,
     });
   }
 
+  onApply = (e) => {
+    e.preventDefault();
+    const { selectedDirectory, startDate, endDate,sortOrder, sortName } = this.state;
+
+    const segment = `segment=${selectedDirectory}`;
+    const dateCreatedFrom = `dateCreatedFrom=${parseDate(startDate)}`
+    const dateCreatedTo = `dateCreatedTo=${parseDate(endDate)}`
+    const sortingOrder = sortOrder === 'desc' ? '-' : '';
+    const sortingField = `sortingField=${sortingOrder}${sortName}`;
+
+    fetch(`http://127.0.0.1:8008/organizations?${segment}&${dateCreatedFrom}&${dateCreatedTo}&${sortingField}`)
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      const organizationsData = data.map(
+        ({address, name, city, segments, dateCreated}) => (
+          {address, name, city, segments, dateCreated}
+        ))
+      this.setState({ organizationsData })
+    });
+  }
+
+  onSortChange = (sortName, sortOrder) => {
+    this.setState({
+      sortName,
+      sortOrder
+    });
+  }
+
+  onInputChange = (e) => {    
+    this.setState({inputValue: e.target.value})
+  }
+
   render() {
-    const { startDate, endDate, selectedDirectory } = this.state;
+    const { startDate, endDate, selectedDirectory, organizationsData, inputValue } = this.state;
+    const tableOptions = {
+      sortName: this.state.sortName,
+      sortOrder: this.state.sortOrder,
+      onSortChange: this.onSortChange,
+      noDataText: 'No data to display'
+    }
     return (
       <>
         <Header />
-        <div className="container mt-1">
+        <Container className="mt-1">
           <h2 className="text-center">Org.Id explorer</h2>
-        </div>
-        <OrigIdInput />
+        </Container>
+        <OrigIdInput value={inputValue} onChange={this.onInputChange}/>
         <Filters 
           startDate={startDate}
           endDate={endDate}
@@ -50,8 +117,28 @@ class Debugger extends Component {
           onStartDateChange={this.onStartDateChange}
           onEndDateChange={this.onEndDateChange}
           onDirectoryChange={this.onDirectoryChange}
+          onApply={this.onApply}
         />
-        <OrgIdTable />
+        <Container className="my-1">
+          <BootstrapTable
+            ref='table'
+            options={tableOptions}
+            data={organizationsData}
+            version='4'
+            striped
+            hover 
+            pagination>
+              {fields.map(({display, fieldName}) => (
+                <TableHeaderColumn 
+                  isKey={fieldName === 'address'}
+                  dataField={fieldName} 
+                  key={fieldName}
+                  dataSort={ true }>
+                  {display}
+                </TableHeaderColumn>
+              ))}
+          </BootstrapTable>
+        </Container>
         <Footer />
       </>
     );
