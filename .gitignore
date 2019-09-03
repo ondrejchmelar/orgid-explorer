@@ -19,6 +19,7 @@
 .directory
 
 # misc
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -29,7 +30,6 @@ yarn-debug.log*
 yarn-error.log*
 
 config.json
-config.js
 node_modules
 public/data/*.json
 src/assets/list.json
