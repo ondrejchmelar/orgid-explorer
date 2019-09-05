@@ -7,6 +7,7 @@ import LocationMap from './LocationMap';
 import MainDescription from './MainDescription';
 import OrgIdDescription from './OrgIdDescription';
 import Owner from './Owner';
+import config from '../config';
 
 class OrgIdDetails extends Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class OrgIdDetails extends Component {
   componentDidMount () {
     const { id } = this.props.match.params;
 
-    fetch(`http://127.0.0.1:8008/organizations/${id}`)
+    fetch(`${config.API_URI}/organizations/${id}`)
       .then(response => {
         return response.json()
       })

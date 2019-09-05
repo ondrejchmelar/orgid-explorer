@@ -7,7 +7,7 @@ import Filters from './Filters';
 import { fields } from './mockedData';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import Container from '@windingtree/wt-ui-react/lib/components/layout/Container';
-// import config from '../config';
+import config from '../config';
 
 const parseDate = (date) => {
   const year = date.getFullYear();
@@ -30,17 +30,18 @@ class Debugger extends Component {
   }
 
   componentDidMount() {
-    fetch(`http://127.0.0.1:8008/organizations`)
+    fetch(`${config.API_URI}/organizations`)
       .then(response => {
         return response.json()
       })
-      .then(data => {
-        const organizationsData = data.map(
+      .then(({items}) => {
+        const organizationsData = items.map(
           ({address, name, city, segments, dateCreated}) => (
             {address, name, city, segments, dateCreated}
           ))
         this.setState({ organizationsData })
-      });
+      })
+      .catch(console.log);
   }
 
   onStartDateChange = (date) => {
@@ -71,12 +72,12 @@ class Debugger extends Component {
     const sortingOrder = sortOrder === 'desc' ? '-' : '';
     const sortingField = `sortingField=${sortingOrder}${sortName}`;
 
-    fetch(`http://127.0.0.1:8008/organizations?${segment}&${dateCreatedFrom}&${dateCreatedTo}&${sortingField}`)
+    fetch(`${config.API_URI}/organizations?${segment}&${dateCreatedFrom}&${dateCreatedTo}&${sortingField}`)
     .then(response => {
       return response.json()
     })
-    .then(data => {
-      const organizationsData = data.map(
+    .then(({items}) => {
+      const organizationsData = items.map(
         ({address, name, city, segments, dateCreated}) => (
           {address, name, city, segments, dateCreated}
         ))
