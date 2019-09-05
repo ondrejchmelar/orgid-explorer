@@ -7,7 +7,7 @@ import Page404 from './components/Page404';
 const Routes = () => (
   <Switch>
     <Route path={["/orgid/:id"]} exact component={OrgIdDetails} />
-    <Redirect exact from={["/orgid","/orgid/"]} to='/'/>
+    <Redirect exact from={"/orgid"} to='/'/>
     <Route path="/" exact component={List} />
     <Route component={Page404} />
   </Switch>

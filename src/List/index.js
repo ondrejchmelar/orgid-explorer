@@ -17,7 +17,7 @@ const parseDate = (date) => {
 
 }
 
-class Debugger extends Component {
+class List extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,19 +29,18 @@ class Debugger extends Component {
     };
   }
 
-  componentDidMount() {
-    fetch(`${config.API_URI}/organizations`)
-      .then(response => {
-        return response.json()
-      })
-      .then(({items}) => {
-        const organizationsData = items.map(
-          ({address, name, city, segments, dateCreated}) => (
-            {address, name, city, segments, dateCreated}
-          ))
-        this.setState({ organizationsData })
-      })
-      .catch(console.log);
+  async componentDidMount() {
+    try {
+      const response = await fetch(`${config.API_URI}/organizations`)
+      const { items } = await response.json();
+      const organizationsData = items.map(
+        ({address, name, city, segments, dateCreated}) => (
+          {address, name, city, segments, dateCreated}
+        ))
+      this.setState({ organizationsData })
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   onStartDateChange = (date) => {
@@ -62,7 +61,7 @@ class Debugger extends Component {
     });
   }
 
-  onApply = (e) => {
+  onApply = async (e) => {
     e.preventDefault();
     const { selectedDirectory, startDate, endDate,sortOrder, sortName } = this.state;
 
@@ -72,17 +71,17 @@ class Debugger extends Component {
     const sortingOrder = sortOrder === 'desc' ? '-' : '';
     const sortingField = `sortingField=${sortingOrder}${sortName}`;
 
-    fetch(`${config.API_URI}/organizations?${segment}&${dateCreatedFrom}&${dateCreatedTo}&${sortingField}`)
-    .then(response => {
-      return response.json()
-    })
-    .then(({items}) => {
+    try {
+    const response = await fetch(`${config.API_URI}/organizations?${segment}&${dateCreatedFrom}&${dateCreatedTo}&${sortingField}`)
+    const { items } = await response.json();
       const organizationsData = items.map(
         ({address, name, city, segments, dateCreated}) => (
           {address, name, city, segments, dateCreated}
         ))
       this.setState({ organizationsData })
-    });
+    } catch (e){ 
+      console.log(e);
+    }
   }
 
   onSortChange = (sortName, sortOrder) => {
@@ -146,4 +145,4 @@ class Debugger extends Component {
   }
 }
 
-export default Debugger;
+export default List;

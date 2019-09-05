@@ -26,8 +26,7 @@ class OrgIdDetails extends Component {
       })
       .then(data => {   
         const { segments, dateCreated, dateUpdated, orgJsonContent } = data;
-        const content = JSON.parse(orgJsonContent);
-        const { hotel, legalEntity, airline } = content;
+        const { hotel, legalEntity, airline } = orgJsonContent;
         this.setState({ segments, dateCreated, dateUpdated, hotel, legalEntity, airline })
       });
   }
