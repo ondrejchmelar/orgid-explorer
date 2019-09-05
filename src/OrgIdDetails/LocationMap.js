@@ -17,13 +17,12 @@ class LocationMap extends React.PureComponent {
   };
 
   render() {
-    const { data } = this.props;
+    const { orgData, location = { latitude: 0, longitude: 0 } } = this.props;
     const { zoom } = this.state;
-    const location = data.description ? data.description.location : data.location;
-    const { latitude, longitude } = location;
-    const position = [latitude, longitude];
-    const name = data.description ? data.description.name : data.name;
-    // Set path to marker icon
+    const position = [location.latitude, location.longitude];
+    let name = 'Address not provided';
+    if( orgData ) name = orgData.description ? orgData.description.name : orgData.name;
+     
     delete L.Icon.Default.prototype._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl,

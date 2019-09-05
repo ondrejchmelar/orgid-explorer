@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatDistance } from 'date-fns';
 
 const InvalidOrgId = ({ id }) => (
   <div className="align-self-center text-center">
@@ -12,11 +13,12 @@ const InvalidOrgId = ({ id }) => (
 
 const MainDescription = ({ directory, id, created, updated }) => {
   if (!created) return <InvalidOrgId id={id} />
+  const baseDate = new Date();
   return (
   <div className="align-self-center text-center">
     <h4>ORG.ID in {directory} directory</h4>
     <h3>{id}</h3>
-    <p>Created: {created} Updated:{updated} </p>
+    <p>Created {formatDistance(new Date(created), baseDate)}     Updated {formatDistance(new Date(updated), baseDate)} </p>
   </div>
 )};
 

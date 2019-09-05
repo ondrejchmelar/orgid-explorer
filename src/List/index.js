@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import { format } from 'date-fns'
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import OrigIdInput from '../components/OrigIdInput';
@@ -8,14 +9,6 @@ import { fields } from './mockedData';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import Container from '@windingtree/wt-ui-react/lib/components/layout/Container';
 import config from '../config';
-
-const parseDate = (date) => {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  return `${year}-${month}-${day}`
-
-}
 
 class List extends Component {
   constructor(props) {
@@ -39,7 +32,7 @@ class List extends Component {
         ))
       this.setState({ organizationsData })
     } catch (e) {
-      console.log(e);
+      //
     }
   }
 
@@ -66,8 +59,8 @@ class List extends Component {
     const { selectedDirectory, startDate, endDate,sortOrder, sortName } = this.state;
 
     const segment = `segment=${selectedDirectory}`;
-    const dateCreatedFrom = `dateCreatedFrom=${parseDate(startDate)}`
-    const dateCreatedTo = `dateCreatedTo=${parseDate(endDate)}`
+    const dateCreatedFrom = `dateCreatedFrom=${format(startDate, 'yyyy-MM-dd')}`
+    const dateCreatedTo = `dateCreatedTo=${format(endDate, 'yyyy-MM-dd')}`
     const sortingOrder = sortOrder === 'desc' ? '-' : '';
     const sortingField = `sortingField=${sortingOrder}${sortName}`;
 
@@ -80,7 +73,7 @@ class List extends Component {
         ))
       this.setState({ organizationsData })
     } catch (e){ 
-      console.log(e);
+      //
     }
   }
 

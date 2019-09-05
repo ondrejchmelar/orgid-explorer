@@ -17,28 +17,33 @@ class OrgIdDetails extends Component {
     };
   };
 
-  componentDidMount () {
+  async componentDidMount () {
     const { id } = this.props.match.params;
+    try {
+      const response = await fetch(`${config.API_URI}/organizations/${id}`);
+      if(response.status === 404) return;
+      const data = await response.json();
+      const { segments, dateCreated, dateUpdated, orgJsonContent, owner, name } = data;
+      const { hotel, legalEntity, airline } = orgJsonContent;
+      const orgData = hotel || airline;
+      const location = orgData && ( orgData.location || (orgData.description && orgData.description.location));
 
-    fetch(`${config.API_URI}/organizations/${id}`)
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {   
-        const { segments, dateCreated, dateUpdated, orgJsonContent } = data;
-        const { hotel, legalEntity, airline } = orgJsonContent;
-        this.setState({ segments, dateCreated, dateUpdated, hotel, legalEntity, airline })
-      });
+      this.setState({ segments, dateCreated, dateUpdated, orgData, legalEntity, owner, name, location })
+    } catch (e) {
+      //
+    }
   }
+  
 
   onInputChange = (e) => {    
     this.setState({inputValue: e.target.value})
   }
 
   render() {
-      const { hotel, legalEntity, airline, segments, dateCreated, dateUpdated, inputValue } = this.state;
-      const { id } = this.props.match.params;
-      const data = hotel || airline;
+    const { orgData, legalEntity, segments, dateCreated, dateUpdated, inputValue, owner, name,
+      location,
+    } = this.state;
+    const { id } = this.props.match.params;
     return (
       <>
         <Header />
@@ -57,22 +62,24 @@ class OrgIdDetails extends Component {
               />
             </Col>
           </Row>
-          <Row className="my-1">
-              <Col md={6} sm={12}>
-                {hotel ? <OrgIdDescription data={data} /> : null}
-                {legalEntity ? <Owner 
-                  name={legalEntity.name}
-                  address={legalEntity.address}
-                  city={legalEntity.city}
-                  countryCode={legalEntity.countryCode}
-                  contact={legalEntity.contact}
-                  id={legalEntity.id}
-                /> : null}
-              </Col>
-              <Col md={6} sm={12}>
-                {data ? <LocationMap data={data} /> : null }
-              </Col>
-          </Row>
+          { !dateCreated ? null
+            : <Row className="my-1">
+                <Col md={6} sm={12}>
+                  {orgData ? <OrgIdDescription orgData={orgData} name={name}/> : null}
+                  {legalEntity ? <Owner 
+                    name={legalEntity.name}
+                    address={legalEntity.address}
+                    city={legalEntity.city}
+                    countryCode={legalEntity.countryCode}
+                    contact={legalEntity.contact}
+                    id={owner}
+                  /> : null}
+                </Col>
+                <Col md={6} sm={12}>
+                  <LocationMap orgData={orgData} location={location}/>
+                </Col>
+            </Row>
+          }
         </Container>
         <Footer />
       </>
