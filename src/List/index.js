@@ -56,16 +56,16 @@ class List extends Component {
 
   onApply = async (e) => {
     e.preventDefault();
-    const { selectedDirectory, startDate, endDate,sortOrder, sortName } = this.state;
-
-    const segment = `segment=${selectedDirectory}`;
-    const dateCreatedFrom = `dateCreatedFrom=${format(startDate, 'yyyy-MM-dd')}`
-    const dateCreatedTo = `dateCreatedTo=${format(endDate, 'yyyy-MM-dd')}`
-    const sortingOrder = sortOrder === 'desc' ? '-' : '';
-    const sortingField = `sortingField=${sortingOrder}${sortName}`;
-
+    const { selectedDirectory, startDate, endDate,sortOrder, sortName, location } = this.state;
+    let qs = '';
+    qs += `segments=${selectedDirectory.toLocaleLowerCase()}`;
+    qs += startDate ? `&dateCreatedFrom=${format(startDate, 'yyyy-MM-dd')}`:'';
+    qs += endDate ? `&dateCreatedTo=${format(endDate, 'yyyy-MM-dd')}` : '';
+    qs += location ? `&location=${location}:200&sortByDistance=${location}` : '';
+    qs += !location && sortOrder && sortName ? `&sortingField=${sortOrder === 'desc' ? '-' : ''}${sortName}` : '';
+    
     try {
-    const response = await fetch(`${config.API_URI}/organizations?${segment}&${dateCreatedFrom}&${dateCreatedTo}&${sortingField}`)
+    const response = await fetch(`${config.API_URI}/organizations?${qs}`)
     const { items } = await response.json();
       const organizationsData = items.map(
         ({address, name, city, segments, dateCreated}) => (
@@ -87,6 +87,10 @@ class List extends Component {
   onInputChange = (e) => {    
     this.setState({inputValue: e.target.value})
   }
+
+  onLocationChange = (e) => {    
+    this.setState({location: e.target.value})
+  } 
 
   render() {
     const { startDate, endDate, selectedDirectory, organizationsData, inputValue } = this.state;
@@ -111,6 +115,7 @@ class List extends Component {
           onEndDateChange={this.onEndDateChange}
           onDirectoryChange={this.onDirectoryChange}
           onApply={this.onApply}
+          onLocationChange={this.onLocationChange}
         />
         <Container className="my-1">
           <BootstrapTable

@@ -11,7 +11,7 @@ class Filters extends Component {
   render() {
     const { 
       startDate, endDate, onStartDateChange, onEndDateChange, onDirectoryChange, selectedDirectory,
-      onApply
+      onApply, onLocationChange,
     } = this.props;
     return (
       <Container className="mt-1">
@@ -45,7 +45,11 @@ class Filters extends Component {
               Filter List
             </Col>
             <Col md={3} className="align-self-center">
-              <Form.Control placeholder="Location" type="text"/>
+              <Form.Control 
+                onChange={onLocationChange}
+                placeholder="-38.016853,-57.525316"
+                type="text"
+              />
             </Col>
             <Col className="align-self-center text-right">Creation date</Col>
             <Col className="align-self-center">
