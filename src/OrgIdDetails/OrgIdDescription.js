@@ -11,7 +11,7 @@ const OrgIdDescription = ({ orgData, name }) => {
         <p>{description.address.line1} {description.address.line2}</p>
         <p> {description.address.city} {description.address.state} {description.address.countryCode}</p>
 
-        <a href={`${website}`}>{website}</a>
+        <a href={`${website}`} className='btn-link' target='_blank' rel="noopener noreferrer">{website}</a>
       </Container>
     );
   }
@@ -19,7 +19,7 @@ const OrgIdDescription = ({ orgData, name }) => {
       <Container className="my-1">
         <h2>{name}</h2>
         {address || city || countryCode ? (<p>{address} {city} {countryCode}</p>) :<p>Address not provided</p>}
-        {website ? <a href={`${website}`}>{website}</a> : <p>Website not provided</p>}
+        {website ? <a href={`${website}`} className='btn-link' target='_blank' rel="noopener noreferrer">{website}</a> : <p>Website not provided</p>}
       </Container>
       );
 };
