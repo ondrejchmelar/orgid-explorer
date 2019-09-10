@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
+import { LinkContainer } from 'react-router-bootstrap';
+import { Button } from '@windingtree/wt-ui-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import OrigIdInput from '../components/OrigIdInput';
@@ -9,6 +11,18 @@ import { fields } from './mockedData';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import Container from '@windingtree/wt-ui-react/lib/components/layout/Container';
 import config from '../config';
+
+const { PUBLIC_URL } = process.env;
+
+function linkFormatter(cell, row, enumObject, index) {
+  return (
+    <LinkContainer to={`${PUBLIC_URL}/orgid/${cell}`} >
+      <Button variant="link">
+        {cell}
+      </Button>
+    </LinkContainer>
+  );
+}
 
 class List extends Component {
   constructor(props) {
@@ -28,8 +42,8 @@ class List extends Component {
       const { items } = await response.json();
       const organizationsData = items.map(
         ({address, name, city, segments, dateCreated}) => (
-          {address, name, city, segments, dateCreated}
-        ))
+          {address, name, city, segments, dateCreated: format(parseISO(dateCreated), 'yyyy-MM-dd')}
+        ));
       this.setState({ organizationsData })
     } catch (e) {
       //
@@ -65,12 +79,12 @@ class List extends Component {
     qs += !location && sortOrder && sortName ? `&sortingField=${sortOrder === 'desc' ? '-' : ''}${sortName}` : '';
     
     try {
-    const response = await fetch(`${config.API_URI}/organizations?${qs}`)
-    const { items } = await response.json();
+      const response = await fetch(`${config.API_URI}/organizations?${qs}`)
+      const { items } = await response.json();
       const organizationsData = items.map(
         ({address, name, city, segments, dateCreated}) => (
-          {address, name, city, segments, dateCreated}
-        ))
+          {address, name, city, segments, dateCreated: format(parseISO(dateCreated), 'yyyy-MM-dd')}
+        ));
       this.setState({ organizationsData })
     } catch (e){ 
       //
@@ -103,8 +117,8 @@ class List extends Component {
     return (
       <>
         <Header />
-        <Container className="mt-1">
-          <h2 className="text-center">Org.Id explorer</h2>
+        <Container className="mt-3">
+          <h2 className="text-center text-uppercase">Org.Id explorer</h2>
         </Container>
         <OrigIdInput value={inputValue} onChange={this.onInputChange}/>
         <Filters 
@@ -127,11 +141,15 @@ class List extends Component {
             hover 
             pagination>
               {fields.map(({display, fieldName}) => (
-                <TableHeaderColumn 
+                <TableHeaderColumn
+                  dataAlign={fieldName === 'address' ? 'left' : 'center'}
                   isKey={fieldName === 'address'}
+                  dataFormat={ fieldName === 'address' ? linkFormatter : undefined}
+                  width={fieldName === 'address' ? '470' : ''}                  
                   dataField={fieldName} 
                   key={fieldName}
-                  dataSort={ true }>
+                  dataSort={ true }
+                >
                   {display}
                 </TableHeaderColumn>
               ))}

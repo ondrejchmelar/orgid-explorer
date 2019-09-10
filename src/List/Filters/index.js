@@ -17,7 +17,7 @@ class Filters extends Component {
       <Container className="mt-1">
         <Form>
           <Row>
-            <Col md={3} className="align-self-center font-weight-bold">
+            <Col md={2} className="align-self-center font-weight-bold">
               List by directory:
             </Col>
             <Col md={2} className="align-self-center">
@@ -41,7 +41,7 @@ class Filters extends Component {
             </Col>
           </Row>
           <Row className="mt-1">
-            <Col className="align-self-center font-weight-bold">
+            <Col className="align-self-center font-weight-bold" md={2}>
               Filter List
             </Col>
             <Col md={3} className="align-self-center">
@@ -67,9 +67,10 @@ class Filters extends Component {
             <Col md={2} className="align-self-center">
               <Button
                 onClick={onApply} 
-                variant="secondry" 
-                type="submit" 
-                block>
+                variant="dark" 
+                block
+                outlined
+                >
                   Apply
               </Button>
             </Col>
