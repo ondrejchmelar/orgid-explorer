@@ -12,11 +12,9 @@ import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import Container from '@windingtree/wt-ui-react/lib/components/layout/Container';
 import config from '../config';
 
-const { PUBLIC_URL } = process.env;
-
 function linkFormatter(cell, row, enumObject, index) {
   return (
-    <LinkContainer to={`${PUBLIC_URL}/orgid/${cell}`} >
+    <LinkContainer to={`orgid/${cell}`} >
       <Button variant="link">
         {cell}
       </Button>
@@ -34,20 +32,6 @@ class List extends Component {
       selectedDirectory: 'HOTELS',
       organizationsData: []
     };
-  }
-
-  async componentDidMount() {
-    try {
-      const response = await fetch(`${config.API_URI}/organizations`)
-      const { items } = await response.json();
-      const organizationsData = items.map(
-        ({address, name, city, segments, dateCreated}) => (
-          {address, name, city, segments, dateCreated: format(parseISO(dateCreated), 'yyyy-MM-dd')}
-        ));
-      this.setState({ organizationsData })
-    } catch (e) {
-      //
-    }
   }
 
   onStartDateChange = (date) => {
@@ -68,29 +52,6 @@ class List extends Component {
     });
   }
 
-  onApply = async (e) => {
-    e.preventDefault();
-    const { selectedDirectory, startDate, endDate,sortOrder, sortName, location } = this.state;
-    let qs = '';
-    qs += `segments=${selectedDirectory.toLocaleLowerCase()}`;
-    qs += startDate ? `&dateCreatedFrom=${format(startDate, 'yyyy-MM-dd')}`:'';
-    qs += endDate ? `&dateCreatedTo=${format(endDate, 'yyyy-MM-dd')}` : '';
-    qs += location ? `&location=${location}:200&sortByDistance=${location}` : '';
-    qs += !location && sortOrder && sortName ? `&sortingField=${sortOrder === 'desc' ? '-' : ''}${sortName}` : '';
-    
-    try {
-      const response = await fetch(`${config.API_URI}/organizations?${qs}`)
-      const { items } = await response.json();
-      const organizationsData = items.map(
-        ({address, name, city, segments, dateCreated}) => (
-          {address, name, city, segments, dateCreated: format(parseISO(dateCreated), 'yyyy-MM-dd')}
-        ));
-      this.setState({ organizationsData })
-    } catch (e){ 
-      //
-    }
-  }
-
   onSortChange = (sortName, sortOrder) => {
     this.setState({
       sortName,
@@ -105,6 +66,42 @@ class List extends Component {
   onLocationChange = (e) => {    
     this.setState({location: e.target.value})
   } 
+
+  parseOrgData = ({address, name, city, segments, dateCreated}) => (
+    { address, name, city, segments, dateCreated: format(parseISO(dateCreated), 'yyyy-MM-dd') }
+  )
+
+  async componentDidMount() {
+    try {
+      const response = await fetch(`${config.API_URI}/organizations`)
+      const { items } = await response.json();
+      const organizationsData = items.map(this.parseOrgData);
+      this.setState({ organizationsData });
+    } catch (e) {
+      //
+    }
+  }
+
+  onApply = async (e) => {
+    e.preventDefault();
+    const { selectedDirectory, startDate, endDate,sortOrder, sortName, location } = this.state;
+    let qs = '';
+    qs += `segments=${selectedDirectory.toLocaleLowerCase()}`;
+    qs += startDate ? `&dateCreatedFrom=${format(startDate, 'yyyy-MM-dd')}`:'';
+    qs += endDate ? `&dateCreatedTo=${format(endDate, 'yyyy-MM-dd')}` : '';
+    qs += location ? `&location=${location}:200&sortByDistance=${location}` : '';
+    qs += !location && sortOrder && sortName ? `&sortingField=${sortOrder === 'desc' ? '-' : ''}${sortName}` : '';
+    
+    try {
+      const response = await fetch(`${config.API_URI}/organizations?${qs}`);
+      const { items } = await response.json();
+      const organizationsData = items.map(this.parseOrgData);
+      this.setState({ organizationsData });
+    } catch (e){ 
+      //
+    }
+  }
+
 
   render() {
     const { startDate, endDate, selectedDirectory, organizationsData, inputValue } = this.state;
@@ -140,19 +137,29 @@ class List extends Component {
             striped
             hover 
             pagination>
-              {fields.map(({display, fieldName}) => (
-                <TableHeaderColumn
-                  dataAlign={fieldName === 'address' ? 'left' : 'center'}
-                  isKey={fieldName === 'address'}
-                  dataFormat={ fieldName === 'address' ? linkFormatter : undefined}
-                  width={fieldName === 'address' ? '470' : ''}                  
-                  dataField={fieldName} 
-                  key={fieldName}
-                  dataSort={ true }
+              <TableHeaderColumn
+                  dataAlign='center'
+                  isKey={true}
+                  dataFormat={linkFormatter}
+                  width='470'                 
+                  dataField='address' 
+                  key='address'
+                  dataSort={true}
                 >
-                  {display}
+                  ORG.ID
                 </TableHeaderColumn>
-              ))}
+              {fields.map(({display, fieldName}) => {
+                if (fieldName === 'address') return null
+                return (
+                  <TableHeaderColumn
+                    dataAlign='center'
+                    dataField={fieldName} 
+                    key={fieldName}
+                    dataSort={true}
+                  >
+                    {display}
+                  </TableHeaderColumn>
+                )})}
           </BootstrapTable>
         </Container>
         <Footer />
