@@ -3,7 +3,7 @@ import { Container, Row, Col } from '@windingtree/wt-ui-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import OrigIdInput from '../components/OrigIdInput';
-import LocationMap from './LocationMap';
+import LocationMap from '../components/LocationMap';
 import MainDescription from './MainDescription';
 import OrgIdDescription from './OrgIdDescription';
 import Owner from './Owner';
@@ -26,14 +26,26 @@ class OrgIdDetails extends Component {
       const { segments, dateCreated, dateUpdated, orgJsonContent, owner, name, environment } = data;
       const { hotel, legalEntity, airline } = orgJsonContent;
       const orgData = hotel || airline;
-      const location = orgData && ( orgData.location || (orgData.description && orgData.description.location));
 
-      this.setState({ environment, segments, dateCreated, dateUpdated, orgData, legalEntity, owner, name, location })
+      const marker = this.parseMarker(orgData);
+      this.setState({ 
+        markers: [marker], environment, segments, dateCreated, dateUpdated, orgData, legalEntity, owner, name,
+      })
     } catch (e) {
       //
     }
   }
   
+  parseMarker = (orgData) => {
+    const marker = { }
+    if (!orgData) return null;
+
+    const location = orgData && ( orgData.location || (orgData.description && orgData.description.location));
+    if (!location) return null;
+    if(location) marker.position = [location.latitude, location.longitude];
+    marker.name = orgData.description ? orgData.description.name : orgData.name;
+    return marker;
+  }
 
   onInputChange = (e) => {    
     this.setState({inputValue: e.target.value})
@@ -41,7 +53,7 @@ class OrgIdDetails extends Component {
 
   render() {
     const { orgData, legalEntity, segments, dateCreated, dateUpdated, inputValue, owner, name,
-      location, environment,
+      environment, markers,
     } = this.state;
     const { id } = this.props.match.params;
     return (
@@ -77,7 +89,7 @@ class OrgIdDetails extends Component {
                   /> : null}
                 </Col>
                 <Col md={6} sm={12}>
-                  <LocationMap orgData={orgData} location={location}/>
+                  <LocationMap markers={markers} center={markers[0] ? markers[0].position : [0,0]}/>
                 </Col>
             </Row>
           }

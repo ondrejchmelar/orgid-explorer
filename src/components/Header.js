@@ -11,7 +11,7 @@ const Header = () => (
         <a className="navbar-brand mr-2" href="https://windingtree.com/">Winding Tree</a>
         <a 
           href='https://windingtree.com/'
-          className='btn-link'
+          className='nav-link'
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -19,7 +19,7 @@ const Header = () => (
         </a>
         <a 
           href='https://developers.windingtree.com/overview.html#orgid'
-          className='btn-link'
+          className='nav-link'
           target="_blank"
           rel="noopener noreferrer"
         >
