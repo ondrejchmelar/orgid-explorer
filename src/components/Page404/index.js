@@ -3,7 +3,6 @@ import {
   Container, Button,
 } from '@windingtree/wt-ui-react';
 import { LinkContainer } from 'react-router-bootstrap';
-import config from '../../config';
 
 const Page404 = () => ( 
   <main id="app-content" className="content-error bg-grad-up" style={{height: '100vh'}}>
