@@ -23,12 +23,12 @@ class OrgIdDetails extends Component {
       const response = await fetch(`${config.API_URI}/organizations/${id}`);
       if(response.status === 404) return;
       const data = await response.json();
-      const { segments, dateCreated, dateUpdated, orgJsonContent, owner, name } = data;
+      const { segments, dateCreated, dateUpdated, orgJsonContent, owner, name, environment } = data;
       const { hotel, legalEntity, airline } = orgJsonContent;
       const orgData = hotel || airline;
       const location = orgData && ( orgData.location || (orgData.description && orgData.description.location));
 
-      this.setState({ segments, dateCreated, dateUpdated, orgData, legalEntity, owner, name, location })
+      this.setState({ environment, segments, dateCreated, dateUpdated, orgData, legalEntity, owner, name, location })
     } catch (e) {
       //
     }
@@ -41,14 +41,14 @@ class OrgIdDetails extends Component {
 
   render() {
     const { orgData, legalEntity, segments, dateCreated, dateUpdated, inputValue, owner, name,
-      location,
+      location, environment,
     } = this.state;
     const { id } = this.props.match.params;
     return (
       <>
         <Header />
-        <Container className="mt-1">
-          <h2 className="text-center">Org.Id explorer</h2>
+        <Container className="mt-3">
+          <h2 className="text-center text-uppercase">Org.Id explorer</h2>
         </Container>
         <OrigIdInput value={inputValue} onChange={this.onInputChange}/>
         <Container className="my-1">
@@ -73,6 +73,7 @@ class OrgIdDetails extends Component {
                     countryCode={legalEntity.countryCode}
                     contact={legalEntity.contact}
                     id={owner}
+                    environment={environment}
                   /> : null}
                 </Col>
                 <Col md={6} sm={12}>

@@ -16,9 +16,9 @@ const MainDescription = ({ directory, id, created, updated }) => {
   const baseDate = new Date();
   return (
   <div className="align-self-center text-center">
-    <h4>ORG.ID in {directory} directory</h4>
-    <h3>{id}</h3>
-    <p>Created {formatDistance(new Date(created), baseDate)}     Updated {formatDistance(new Date(updated), baseDate)} </p>
+    <h3>ORG.ID in {directory} directory</h3>
+    <h2>{id}</h2>
+    <p>Created {formatDistance(new Date(created), baseDate)} ago, updated {formatDistance(new Date(updated), baseDate)} ago</p>
   </div>
 )};
 

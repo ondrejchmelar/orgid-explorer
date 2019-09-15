@@ -8,6 +8,7 @@ const Owner = ({
     countryCode,
     houseNumber,
     road,
+    environment,
   },
   contact,
   id,
@@ -16,7 +17,17 @@ const Owner = ({
     <h2>Owner:</h2>
     <p>{name}</p>
     <p>{road} {houseNumber} {city} {countryCode}</p>
-    {id ? <a href={`/orgid/${id}`}>{id}</a> : null}
+    {id ? 
+        <a 
+          href={`https://${environment === 'mainnet' ? '' : 'ropsten.'}etherscan.io/address/${id}`}
+          className='btn-link'
+          target="_blank"
+          rel="noopener noreferrer"
+          >
+          {id}
+        </a> 
+      : null
+    }
     {Object.entries(contact).map(([k, v]) => (
         <p key={k}>{k}: {v}</p>
     ))}
