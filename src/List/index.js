@@ -11,6 +11,9 @@ import { fields } from './mockedData';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import Container from '@windingtree/wt-ui-react/lib/components/layout/Container';
 import config from '../config';
+import LocationMap from '../components/LocationMap';
+import styles from './List.module.css';
+
 
 function linkFormatter(cell, row, enumObject, index) {
   return (
@@ -30,7 +33,8 @@ class List extends Component {
       startDate: new Date(2019,0,1),
       endDate: new Date(Date.now()),
       selectedDirectory: 'HOTELS',
-      organizationsData: []
+      organizationsData: [],
+      markers: undefined,
     };
   }
 
@@ -71,13 +75,38 @@ class List extends Component {
     { address, name, city, segments, dateCreated: format(parseISO(dateCreated), 'yyyy-MM-dd') }
   )
 
+  parseMarkers = (items) => {
+    const markers = items.map(({ orgJsonContent  }) => {
+      const orgData = orgJsonContent.hotel || orgJsonContent.airline;
+
+      const marker = {};
+      marker.name = orgData.description ? orgData.description.name : orgData.name;
+      const location = orgData.location || (orgData.description && orgData.description.location);
+      if(location) marker.position = [location.latitude, location.longitude];
+      return marker;
+    })
+    return markers;
+  }
+
   async componentDidMount() {
     try {
       const response = await fetch(`${config.API_URI}/organizations`)
       const { items } = await response.json();
       const organizationsData = items.map(this.parseOrgData);
-      this.setState({ organizationsData });
+      const markers = items.map(({ orgJsonContent }) => {
+        const orgData = orgJsonContent.hotel || orgJsonContent.airline;
+        if(!orgData) return {invalid: true};
+        const marker = {};
+        marker.name = orgData.description ? orgData.description.name : orgData.name;
+        const location = orgData && (orgData.location || (orgData.description && orgData.description.location));
+        if(!location) return {invalid: true};
+        marker.position = [location.latitude, location.longitude];
+        return marker;
+      })
+      .filter(({invalid}) => !invalid);
+      this.setState({ organizationsData, markers });
     } catch (e) {
+      console.log(e);
       //
     }
   }
@@ -104,7 +133,7 @@ class List extends Component {
 
 
   render() {
-    const { startDate, endDate, selectedDirectory, organizationsData, inputValue } = this.state;
+    const { startDate, endDate, selectedDirectory, organizationsData, inputValue, markers } = this.state;
     const tableOptions = {
       sortName: this.state.sortName,
       sortOrder: this.state.sortOrder,
@@ -161,6 +190,9 @@ class List extends Component {
                   </TableHeaderColumn>
                 )})}
           </BootstrapTable>
+        </Container>
+        <Container className={`my-1 min-vh-100 ${styles['fixedh-300']}`}>
+          <LocationMap markers={markers} zoom={2} center={[0,0]}/>
         </Container>
         <Footer />
       </>
