@@ -2,8 +2,6 @@
 import React from 'react';
 import { LinkContainer } from 'react-router-bootstrap'
 
-const { PUBLIC_URL } = process.env;
-
 const Header = () => (
   <div id="app-header">
     <nav className="navbar navbar-expand-lg navbar-light" id="navbar">
@@ -23,9 +21,9 @@ const Header = () => (
           target="_blank"
           rel="noopener noreferrer"
         >
-          About ORG.  ID
+          About ORG.ID
         </a>
-        <LinkContainer to={`${PUBLIC_URL}/`}>
+        <LinkContainer to='/'>
           <a className="nav-link">List</a>
         </LinkContainer>
       </div>

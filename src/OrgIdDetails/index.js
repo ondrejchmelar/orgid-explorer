@@ -51,6 +51,26 @@ class OrgIdDetails extends Component {
     this.setState({inputValue: e.target.value})
   }
 
+  onInputClick = async () => {    
+    const { inputValue } = this.state;
+    try {
+      const response = await fetch(`${config.API_URI}/organizations/${inputValue}`);
+      if(response.status === 404) return;
+      const data = await response.json();
+      const { segments, dateCreated, dateUpdated, orgJsonContent, owner, name, environment } = data;
+      const { hotel, legalEntity, airline } = orgJsonContent;
+      const orgData = hotel || airline;
+
+      const marker = this.parseMarker(orgData);
+      this.setState({ 
+        markers: [marker], environment, segments, dateCreated, dateUpdated, orgData, legalEntity, owner, name,
+      })
+    } catch (e) {
+      console.log(e)
+      //
+    }
+  }
+
   render() {
     const { orgData, legalEntity, segments, dateCreated, dateUpdated, inputValue, owner, name,
       environment, markers,
@@ -62,7 +82,7 @@ class OrgIdDetails extends Component {
         <Container className="mt-3">
           <h2 className="text-center text-uppercase">Org.Id explorer</h2>
         </Container>
-        <OrigIdInput value={inputValue} onChange={this.onInputChange}/>
+        <OrigIdInput value={inputValue} onChange={this.onInputChange} onClick={this.onInputClick}/>
         <Container className="my-1">
           <Row className="align-self-center">
             <Col className="align-self-center">
