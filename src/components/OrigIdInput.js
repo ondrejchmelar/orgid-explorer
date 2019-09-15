@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Form, Button } from '@windingtree/wt-ui-react';
 import { LinkContainer } from 'react-router-bootstrap';
-import config from '../config';
 
 const OrgIdInput = ({ value, onChange, onClick }) =>(
   <Container className="mb-1">
@@ -11,7 +10,7 @@ const OrgIdInput = ({ value, onChange, onClick }) =>(
           <Form.Control placeholder="ORG.ID Address" type="text" onChange={onChange} value={value}/>
         </Col>
         <Col md={1} className="mr-1">
-          <LinkContainer to={`${config.publicUrl}/orgid/${value}`} >
+          <LinkContainer to={`/orgid/${value}`} >
             <Button variant="primary" onClick={onClick}>
               GO
             </Button>

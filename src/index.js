@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppContainer } from 'react-hot-loader';
 import Routes from './Routes';
-import config from './config';
 
 import '@windingtree/wt-ui/dist/styles.css';
 import './assets/styles.scss';
@@ -15,7 +14,7 @@ const render = (Component) => {
   }
   renderMethod(
     <AppContainer>
-      <Router basename={config.publicUrl}>
+      <Router>
         <Component />
       </Router>
     </AppContainer>,

@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import { LinkContainer } from 'react-router-bootstrap'
-import config from '../config';
 
 const Header = () => (
   <div id="app-header">
@@ -24,7 +23,7 @@ const Header = () => (
         >
           About ORG.ID
         </a>
-        <LinkContainer to={`${config.publicUrl}/`}>
+        <LinkContainer to='/'>
           <a className="nav-link">List</a>
         </LinkContainer>
       </div>

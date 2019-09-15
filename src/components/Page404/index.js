@@ -12,7 +12,7 @@ const Page404 = () => (
         <div className="py-1 py-md-5 text-center">
           <h1 className="mb-1 text-white">Oops... 404</h1>
           <p className="mb-2 lead text-white">That is not the page you are looking for.</p>
-          <LinkContainer to={`${config.publicUrl}/`} >
+          <LinkContainer to='/' >
             <Button variant="primary">Go to main</Button>
           </LinkContainer>
         </div>
