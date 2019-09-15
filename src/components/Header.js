@@ -9,8 +9,24 @@ const Header = () => (
     <nav className="navbar navbar-expand-lg navbar-light" id="navbar">
       <div className="container">
         <a className="navbar-brand mr-2" href="https://windingtree.com/">Winding Tree</a>
+        <a 
+          href='https://windingtree.com/'
+          className='btn-link'
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Winding Tree website
+        </a>
+        <a 
+          href='https://developers.windingtree.com/overview.html#orgid'
+          className='btn-link'
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          About ORG.  ID
+        </a>
         <LinkContainer to={`${PUBLIC_URL}/`}>
-          <a className="nav-link">Home</a>
+          <a className="nav-link">List</a>
         </LinkContainer>
       </div>
     </nav>

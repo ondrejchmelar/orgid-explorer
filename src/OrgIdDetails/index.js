@@ -47,8 +47,8 @@ class OrgIdDetails extends Component {
     return (
       <>
         <Header />
-        <Container className="mt-1">
-          <h2 className="text-center">Org.Id explorer</h2>
+        <Container className="mt-3">
+          <h2 className="text-center text-uppercase">Org.Id explorer</h2>
         </Container>
         <OrigIdInput value={inputValue} onChange={this.onInputChange}/>
         <Container className="my-1">
