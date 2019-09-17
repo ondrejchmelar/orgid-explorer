@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/windingtree/orgid-explorer.git"
   },
-  "homepage": " http://windingtree.github.io/orgid-explorer",
+  "homepage": "https://explorer.myorgid.com/",
   "author": "Winding Tree developers <dev@windingtree.com>",
   "license": "MIT",
   "dependencies": {
