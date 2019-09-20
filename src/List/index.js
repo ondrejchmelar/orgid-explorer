@@ -67,8 +67,11 @@ class List extends Component {
     this.setState({inputValue: e.target.value})
   }
 
-  onLocationChange = (e) => {    
-    this.setState({location: e.target.value})
+  onLocationChange = (place) => {
+    this.setState({
+      city: place.formatted_address, 
+      location:`${place.geometry.location.lat()},${place.geometry.location.lng()}`
+    })
   } 
 
   parseOrgData = ({address, name, city, segments, dateCreated}) => (
@@ -76,24 +79,7 @@ class List extends Component {
   )
 
   parseMarkers = (items) => {
-    const markers = items.map(({ orgJsonContent  }) => {
-      const orgData = orgJsonContent.hotel || orgJsonContent.airline;
-
-      const marker = {};
-      marker.name = orgData.description ? orgData.description.name : orgData.name;
-      const location = orgData.location || (orgData.description && orgData.description.location);
-      if(location) marker.position = [location.latitude, location.longitude];
-      return marker;
-    })
-    return markers;
-  }
-
-  async componentDidMount() {
-    try {
-      const response = await fetch(`${config.API_URI}/organizations`)
-      const { items } = await response.json();
-      const organizationsData = items.map(this.parseOrgData);
-      const markers = items.map(({ orgJsonContent }) => {
+    const markers = items.map(({ orgJsonContent }) => {
         const orgData = orgJsonContent.hotel || orgJsonContent.airline;
         if(!orgData) return {invalid: true};
         const marker = {};
@@ -104,6 +90,15 @@ class List extends Component {
         return marker;
       })
       .filter(({invalid}) => !invalid);
+    return markers;
+  }
+
+  async componentDidMount() {
+    try {
+      const response = await fetch(`${config.API_URI}/organizations`)
+      const { items } = await response.json();
+      const organizationsData = items.map(this.parseOrgData);
+      const markers = this.parseMarkers(items);
       this.setState({ organizationsData, markers });
     } catch (e) {
       console.log(e);
@@ -125,8 +120,9 @@ class List extends Component {
       const response = await fetch(`${config.API_URI}/organizations?${qs}`);
       const { items } = await response.json();
       const organizationsData = items.map(this.parseOrgData);
-      this.setState({ organizationsData });
-    } catch (e){ 
+      const markers = this.parseMarkers(items);
+      this.setState({ organizationsData, markers });
+    } catch (e) { 
       //
     }
   }

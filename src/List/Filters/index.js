@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import DatePicker from "react-datepicker";
+import Autocomplete from 'react-google-autocomplete';
 import { Container, Row, Col, Form, Dropdown, Button } from '@windingtree/wt-ui-react';
 import { directories } from './directories';
 
 import "react-datepicker/dist/react-datepicker.css";
-
 
 class Filters extends Component {
 
@@ -13,12 +13,13 @@ class Filters extends Component {
       startDate, endDate, onStartDateChange, onEndDateChange, onDirectoryChange, selectedDirectory,
       onApply, onLocationChange,
     } = this.props;
+
     return (
       <Container className="mt-1">
         <Form>
           <Row>
-            <Col md={2} className="align-self-center font-weight-bold">
-              List by directory:
+            <Col md={1} className="align-self-center font-weight-bold">
+              Directory
             </Col>
             <Col md={2} className="align-self-center">
               <Dropdown
@@ -41,14 +42,13 @@ class Filters extends Component {
             </Col>
           </Row>
           <Row className="mt-1">
-            <Col className="align-self-center font-weight-bold" md={2}>
-              Filter List
+            <Col className="align-self-center font-weight-bold" md={1}>
+              Filters
             </Col>
-            <Col md={3} className="align-self-center">
-              <Form.Control 
-                onChange={onLocationChange}
-                placeholder="-38.016853,-57.525316"
-                type="text"
+            <Col md={4} className="align-self-center">
+              <Autocomplete
+                onPlaceSelected={onLocationChange}
+                types={['(cities)']}
               />
             </Col>
             <Col className="align-self-center text-right">Creation date</Col>
