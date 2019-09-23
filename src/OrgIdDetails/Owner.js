@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container } from '@windingtree/wt-ui-react';
+import styles from './styles.module.css';
 
 const Owner = ({ 
   name,
@@ -20,7 +21,7 @@ const Owner = ({
     {id ? 
         <a 
           href={`https://${environment === 'mainnet' ? '' : 'ropsten.'}etherscan.io/address/${id}`}
-          className='btn-link'
+          className={`btn-link ${styles['dont-break-out']}`}
           target="_blank"
           rel="noopener noreferrer"
           >
