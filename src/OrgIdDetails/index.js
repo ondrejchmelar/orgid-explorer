@@ -8,6 +8,7 @@ import MainDescription from './MainDescription';
 import OrgIdDescription from './OrgIdDescription';
 import Owner from './Owner';
 import config from '../config';
+import styles from './styles.module.css';
 
 class OrgIdDetails extends Component {
   constructor(props) {
@@ -108,7 +109,7 @@ class OrgIdDetails extends Component {
                     environment={environment}
                   /> : null}
                 </Col>
-                <Col md={6} sm={12}>
+                <Col md={6} sm={12} className={`${styles['fixedh-600']}`}>
                   <LocationMap markers={markers} center={markers[0] ? markers[0].position : [0,0]}/>
                 </Col>
             </Row>

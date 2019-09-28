@@ -18,10 +18,10 @@ class Filters extends Component {
       <Container className="mt-1">
         <Form>
           <Row>
-            <Col md={1} className="align-self-center font-weight-bold">
+            <Col md={1} xs={3} className="align-self-center font-weight-bold mt-1">
               Directory
             </Col>
-            <Col md={2} className="align-self-center">
+            <Col md={2} xs={3} className="align-self-center mt-1">
               <Dropdown
                 onSelect={onDirectoryChange}
               >
@@ -41,30 +41,30 @@ class Filters extends Component {
               </Dropdown>
             </Col>
           </Row>
-          <Row className="mt-1">
-            <Col className="align-self-center font-weight-bold" md={1}>
+          <Row>
+            <Col  md={1} className="align-self-center font-weight-bold mt-1">
               Filters
             </Col>
-            <Col md={4} className="align-self-center">
+            <Col md={4} className="align-self-center mt-1">
               <Autocomplete
                 onPlaceSelected={onLocationChange}
                 types={['(cities)']}
               />
             </Col>
-            <Col className="align-self-center text-right">Creation date</Col>
-            <Col className="align-self-center">
+            <Col md={1} className="align-self-center mt-1">Creation date</Col>
+            <Col className="align-self-center mt-1">
               <DatePicker
                 selected={startDate}
                 onChange={onStartDateChange}
               />
             </Col>
-            <Col className="align-self-center">
+            <Col className="align-self-center mt-1">
               <DatePicker
                 selected={endDate}
                 onChange={onEndDateChange}
               />
             </Col>
-            <Col md={2} className="align-self-center">
+            <Col md={2} className="align-self-center mt-1">
               <Button
                 onClick={onApply} 
                 variant="dark" 
