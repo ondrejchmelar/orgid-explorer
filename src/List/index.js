@@ -32,7 +32,7 @@ class List extends Component {
       inputValue: '',
       startDate: new Date(2019,0,1),
       endDate: new Date(Date.now()),
-      selectedDirectory: 'AIRLINES',
+      selectedDirectory: 'HOTELS',
       selectedEnvironment: 'mainnet',
       organizationsData: [],
       markers: undefined,
