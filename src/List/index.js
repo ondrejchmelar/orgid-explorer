@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { format, parseISO } from 'date-fns'
@@ -86,15 +87,20 @@ class List extends Component {
   )
 
   parseMarkers = (items) => {
-    const markers = items.map(({ orgJsonContent }) => {
-        if (!orgJsonContent) return {invalid: true};
-        const orgData = orgJsonContent.hotel || orgJsonContent.airline;
-        if(!orgData) return {invalid: true};
-        const marker = {};
-        marker.name = orgData.description ? orgData.description.name : orgData.name;
-        const location = orgData && (orgData.location || (orgData.description && orgData.description.location));
+    const markers = items.map(({ gpsCoordsLat, gpsCoordsLon, orgJsonContent, name }) => {
+        const orgData = orgJsonContent && (orgJsonContent.hotel || orgJsonContent.airline);
+        const location = (
+          orgData && (orgData.location || (orgData.description && orgData.description.location))
+          ) 
+          || {
+            latitude: gpsCoordsLat,
+            longitude: gpsCoordsLon,
+          };
         if(!location) return {invalid: true};
+        const marker = {};
         marker.position = [location.latitude, location.longitude];
+        marker.name = (orgData && ((orgData.description && orgData.description.name) || orgData.name))
+          || name;
         return marker;
       })
       .filter(({invalid}) => !invalid);
@@ -126,7 +132,7 @@ class List extends Component {
       const markers = this.parseMarkers(items);
       this.setState({ organizationsData, markers });
     } catch (e) { 
-      //
+      console.log(e)
     }
   }
 
