@@ -6,12 +6,12 @@ const OrgIdInput = ({ value, onChange, onClick }) =>(
   <Container className="mb-1">
     <Form>
       <Row>
-        <Col>
+        <Col className="mt-1">
           <Form.Control placeholder="ORG.ID Address" type="text" onChange={onChange} value={value}/>
         </Col>
-        <Col md={1} className="mr-1">
+        <Col md={2} className="mt-1">
           <LinkContainer to={`/orgid/${value}`} >
-            <Button variant="primary" onClick={onClick}>
+            <Button variant="primary" onClick={onClick} block>
               GO
             </Button>
           </LinkContainer>

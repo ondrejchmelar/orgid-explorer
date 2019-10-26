@@ -8,6 +8,7 @@ import MainDescription from './MainDescription';
 import OrgIdDescription from './OrgIdDescription';
 import Owner from './Owner';
 import config from '../config';
+import styles from './styles.module.css';
 
 class OrgIdDetails extends Component {
   constructor(props) {
@@ -23,11 +24,14 @@ class OrgIdDetails extends Component {
       const response = await fetch(`${config.API_URI}/organizations/${id}`);
       if(response.status === 404) return;
       const data = await response.json();
-      const { segments, dateCreated, dateUpdated, orgJsonContent, owner, name, environment } = data;
+      const {
+        segments, dateCreated, dateUpdated, orgJsonContent, owner, name, environment,
+        gpsCoordsLat, gpsCoordsLon,
+      } = data;
       const { hotel, legalEntity, airline } = orgJsonContent;
       const orgData = hotel || airline;
 
-      const marker = this.parseMarker(orgData);
+      const marker = this.parseMarker(orgData, gpsCoordsLat, gpsCoordsLon, name);
       this.setState({ 
         markers: [marker], environment, segments, dateCreated, dateUpdated, orgData, legalEntity, owner, name,
       })
@@ -36,14 +40,18 @@ class OrgIdDetails extends Component {
     }
   }
   
-  parseMarker = (orgData) => {
-    const marker = { }
-    if (!orgData) return null;
-
-    const location = orgData && ( orgData.location || (orgData.description && orgData.description.location));
+  parseMarker = (orgData, gpsCoordsLat, gpsCoordsLon, name) => {
+    const location = (
+      orgData && (orgData.location || (orgData.description && orgData.description.location)))
+      || {
+        latitude: gpsCoordsLat,
+        longitude: gpsCoordsLon,
+      };
     if (!location) return null;
-    if(location) marker.position = [location.latitude, location.longitude];
-    marker.name = orgData.description ? orgData.description.name : orgData.name;
+    const marker = {};
+    marker.position = [location.latitude, location.longitude];
+    marker.name = (orgData && ((orgData.description && orgData.description.name) || orgData.name))
+      || name;
     return marker;
   }
 
@@ -108,7 +116,7 @@ class OrgIdDetails extends Component {
                     environment={environment}
                   /> : null}
                 </Col>
-                <Col md={6} sm={12}>
+                <Col md={6} sm={12} className={`${styles['fixedh-600']}`}>
                   <LocationMap markers={markers} center={markers[0] ? markers[0].position : [0,0]}/>
                 </Col>
             </Row>

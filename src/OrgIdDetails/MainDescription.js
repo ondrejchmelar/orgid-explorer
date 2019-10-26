@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatDistance } from 'date-fns';
+import styles from './styles.module.css';
 
 const InvalidOrgId = ({ id }) => (
   <div className="align-self-center text-center">
@@ -14,10 +15,19 @@ const InvalidOrgId = ({ id }) => (
 const MainDescription = ({ directory, id, created, updated }) => {
   if (!created) return <InvalidOrgId id={id} />
   const baseDate = new Date();
+  const directories = directory.split(',');
   return (
   <div className="align-self-center text-center">
-    <h3>ORG.ID in {directory} directory</h3>
-    <h2>{id}</h2>
+    <h3>ORG.ID in {
+      directories.map((directory, i) => {
+        if (!i) return directory;
+        return `, ${directory}`;
+      })
+    }{
+      directories.length > 1 ? ' directories' : ' directory'
+    }
+    </h3>
+    <h2 className={`${styles['dont-break-out']}`}>{id}</h2>
     <p>Created {formatDistance(new Date(created), baseDate)} ago, updated {formatDistance(new Date(updated), baseDate)} ago</p>
   </div>
 )};
