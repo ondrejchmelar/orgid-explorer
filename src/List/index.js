@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { format, parseISO } from 'date-fns'
@@ -33,6 +34,7 @@ class List extends Component {
       startDate: new Date(2019,0,1),
       endDate: new Date(Date.now()),
       selectedDirectory: 'HOTELS',
+      selectedEnvironment: 'mainnet',
       organizationsData: [],
       markers: undefined,
     };
@@ -53,6 +55,12 @@ class List extends Component {
   onDirectoryChange = (eventKey) => {
     this.setState({
       selectedDirectory: eventKey,
+    });
+  }
+
+  onEnvironmentChange = (eventKey) => {
+    this.setState({
+      selectedEnvironment: eventKey,
     });
   }
 
@@ -79,14 +87,20 @@ class List extends Component {
   )
 
   parseMarkers = (items) => {
-    const markers = items.map(({ orgJsonContent }) => {
-        const orgData = orgJsonContent.hotel || orgJsonContent.airline;
-        if(!orgData) return {invalid: true};
-        const marker = {};
-        marker.name = orgData.description ? orgData.description.name : orgData.name;
-        const location = orgData && (orgData.location || (orgData.description && orgData.description.location));
+    const markers = items.map(({ gpsCoordsLat, gpsCoordsLon, orgJsonContent, name }) => {
+        const orgData = orgJsonContent && (orgJsonContent.hotel || orgJsonContent.airline);
+        const location = (
+          orgData && (orgData.location || (orgData.description && orgData.description.location))
+          ) 
+          || {
+            latitude: gpsCoordsLat,
+            longitude: gpsCoordsLon,
+          };
         if(!location) return {invalid: true};
+        const marker = {};
         marker.position = [location.latitude, location.longitude];
+        marker.name = (orgData && ((orgData.description && orgData.description.name) || orgData.name))
+          || name;
         return marker;
       })
       .filter(({invalid}) => !invalid);
@@ -95,7 +109,8 @@ class List extends Component {
 
   async componentDidMount() {
     try {
-      const response = await fetch(`${config.API_URI}/organizations`)
+      const qs = this.prepareQS();
+      const response = await fetch(`${config.API_URI}/organizations?${qs}`)
       const { items } = await response.json();
       const organizationsData = items.map(this.parseOrgData);
       const markers = this.parseMarkers(items);
@@ -108,14 +123,8 @@ class List extends Component {
 
   onApply = async (e) => {
     e.preventDefault();
-    const { selectedDirectory, startDate, endDate,sortOrder, sortName, location } = this.state;
-    let qs = '';
-    qs += `segments=${selectedDirectory.toLocaleLowerCase()}`;
-    qs += startDate ? `&dateCreatedFrom=${format(startDate, 'yyyy-MM-dd')}`:'';
-    qs += endDate ? `&dateCreatedTo=${format(endDate, 'yyyy-MM-dd')}` : '';
-    qs += location ? `&location=${location}:200&sortByDistance=${location}` : '';
-    qs += !location && sortOrder && sortName ? `&sortingField=${sortOrder === 'desc' ? '-' : ''}${sortName}` : '';
-    
+
+    const qs = this.prepareQS();
     try {
       const response = await fetch(`${config.API_URI}/organizations?${qs}`);
       const { items } = await response.json();
@@ -123,13 +132,31 @@ class List extends Component {
       const markers = this.parseMarkers(items);
       this.setState({ organizationsData, markers });
     } catch (e) { 
-      //
+      console.log(e)
     }
   }
 
+  prepareQS = () => {
+    const { 
+      selectedDirectory, startDate, endDate,sortOrder, sortName, location, selectedEnvironment 
+    } = this.state;
+
+    let qs = '';
+    qs += `environment=${selectedEnvironment.toLowerCase()}`;
+    qs += `&segments=${selectedDirectory.toLowerCase()}`;
+    qs += startDate ? `&dateCreatedFrom=${format(startDate, 'yyyy-MM-dd')}`:'';
+    qs += endDate ? `&dateCreatedTo=${format(endDate, 'yyyy-MM-dd')}` : '';
+    qs += location ? `&location=${location}:200&sortByDistance=${location}` : '';
+    qs += !location && sortOrder && sortName ? `&sortingField=${sortOrder === 'desc' ? '-' : ''}${sortName}` : '';
+    
+    return qs;
+  }
 
   render() {
-    const { startDate, endDate, selectedDirectory, organizationsData, inputValue, markers } = this.state;
+    const { 
+      startDate, endDate, selectedDirectory, organizationsData, inputValue, markers,
+      selectedEnvironment, 
+    } = this.state;
     const tableOptions = {
       sortName: this.state.sortName,
       sortOrder: this.state.sortOrder,
@@ -152,6 +179,8 @@ class List extends Component {
           onDirectoryChange={this.onDirectoryChange}
           onApply={this.onApply}
           onLocationChange={this.onLocationChange}
+          onEnvironmentChange={this.onEnvironmentChange}
+          selectedEnvironment={selectedEnvironment}
         />
         <Container className="my-1">
           <BootstrapTable

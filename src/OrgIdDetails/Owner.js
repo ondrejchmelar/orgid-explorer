@@ -18,7 +18,8 @@ const Owner = ({
     <h2>Owner:</h2>
     <p>{name}</p>
     <p>{road} {houseNumber} {city} {countryCode}</p>
-    {id ? 
+    {id ?
+      <p>
         <a 
           href={`https://${environment === 'mainnet' ? '' : 'ropsten.'}etherscan.io/address/${id}`}
           className={`btn-link ${styles['dont-break-out']}`}
@@ -26,11 +27,12 @@ const Owner = ({
           rel="noopener noreferrer"
           >
           {id}
-        </a> 
+        </a>
+      </p> 
       : null
     }
     {Object.entries(contact).map(([k, v]) => (
-        <p key={k}>{k}: {v}</p>
+        <p key={k}><strong>{k}: </strong> {v}</p>
     ))}
   </Container>
 );
