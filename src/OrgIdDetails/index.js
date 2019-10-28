@@ -43,15 +43,15 @@ class OrgIdDetails extends Component {
   parseMarker = (orgData, gpsCoordsLat, gpsCoordsLon, name) => {
     const location = (
       orgData && (orgData.location || (orgData.description && orgData.description.location)))
-      || {
+      || ( gpsCoordsLat && gpsCoordsLon && {
         latitude: gpsCoordsLat,
         longitude: gpsCoordsLon,
-      };
+      });
     if (!location) return null;
     const marker = {};
     marker.position = [location.latitude, location.longitude];
     marker.name = (orgData && ((orgData.description && orgData.description.name) || orgData.name))
-      || name;
+      || name || 'Name not provided';
     return marker;
   }
 

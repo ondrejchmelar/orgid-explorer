@@ -21,7 +21,7 @@ class Filters extends Component {
             <Col md={1} xs={4} className="align-self-center font-weight-bold mt-1">
               Directory:
             </Col>
-            <Col md={4} xs={7} className="mt-1">
+            <Col md={4} xs={12} className="mt-1">
               <Dropdown
                 onSelect={onDirectoryChange}
               >
@@ -43,7 +43,7 @@ class Filters extends Component {
             <Col md="auto" xs={4} className="align-self-center font-weight-bold mt-1">
               Environment:
             </Col>
-            <Col md={4} xs={7} className="align-self-center mt-1">
+            <Col md={4} xs={12} className="align-self-center mt-1">
               <Dropdown
                 onSelect={onEnvironmentChange}
               >
@@ -64,7 +64,7 @@ class Filters extends Component {
             </Col>
           </Row>
           <Row className="mt-1">
-            <Col  md={1} className="align-self-center font-weight-bold mt-1">
+            <Col  md={1} className="align-self-center font-weight-bold mt-1 mt-2">
               Filters:
             </Col>
             <Col md={4} className="align-self-center mt-md-1">
