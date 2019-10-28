@@ -92,15 +92,15 @@ class List extends Component {
         const location = (
           orgData && (orgData.location || (orgData.description && orgData.description.location))
           ) 
-          || {
+          || (gpsCoordsLat && gpsCoordsLon && {
             latitude: gpsCoordsLat,
             longitude: gpsCoordsLon,
-          };
+          });
         if(!location) return {invalid: true};
         const marker = {};
         marker.position = [location.latitude, location.longitude];
         marker.name = (orgData && ((orgData.description && orgData.description.name) || orgData.name))
-          || name;
+          || name || 'Name not provided';
         return marker;
       })
       .filter(({invalid}) => !invalid);
