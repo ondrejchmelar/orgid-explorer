@@ -20,24 +20,7 @@ class OrgIdDetails extends Component {
 
   async componentDidMount () {
     const { id } = this.props.match.params;
-    try {
-      const response = await fetch(`${config.API_URI}/organizations/${id}`);
-      if(response.status === 404) return;
-      const data = await response.json();
-      const {
-        segments, dateCreated, dateUpdated, orgJsonContent, owner, name, environment,
-        gpsCoordsLat, gpsCoordsLon,
-      } = data;
-      const { hotel, legalEntity, airline } = orgJsonContent;
-      const orgData = hotel || airline;
-
-      const marker = this.parseMarker(orgData, gpsCoordsLat, gpsCoordsLon, name);
-      this.setState({ 
-        markers: [marker], environment, segments, dateCreated, dateUpdated, orgData, legalEntity, owner, name,
-      })
-    } catch (e) {
-      //
-    }
+    this.fetchData(id);
   }
   
   parseMarker = (orgData, gpsCoordsLat, gpsCoordsLon, name) => {
@@ -61,17 +44,24 @@ class OrgIdDetails extends Component {
 
   onInputClick = async () => {    
     const { inputValue } = this.state;
+    this.fetchData(inputValue);
+  }
+
+  fetchData = async (orgId) => {
     try {
-      const response = await fetch(`${config.API_URI}/organizations/${inputValue}`);
+      const response = await fetch(`${config.API_URI}/organizations/${orgId}`);
       if(response.status === 404) return;
       const data = await response.json();
-      const { segments, dateCreated, dateUpdated, orgJsonContent, owner, name, environment } = data;
+      const {
+        segments, dateCreated, dateUpdated, orgJsonContent, owner, name, environment, lifDepositValue,
+      } = data;
       const { hotel, legalEntity, airline } = orgJsonContent;
       const orgData = hotel || airline;
 
       const marker = this.parseMarker(orgData);
       this.setState({ 
-        markers: [marker], environment, segments, dateCreated, dateUpdated, orgData, legalEntity, owner, name,
+        markers: [marker], environment, segments, dateCreated, dateUpdated, orgData, legalEntity, owner,
+        name, lifDepositValue,
       })
     } catch (e) {
       console.log(e)
@@ -81,7 +71,7 @@ class OrgIdDetails extends Component {
 
   render() {
     const { orgData, legalEntity, segments, dateCreated, dateUpdated, inputValue, owner, name,
-      environment, markers,
+      environment, markers, lifDepositValue,
     } = this.state;
     const { id } = this.props.match.params;
     return (
@@ -99,6 +89,8 @@ class OrgIdDetails extends Component {
                 id={id}
                 created={dateCreated}
                 updated={dateUpdated}
+                environment={environment}
+                lifDepositValue={lifDepositValue}
               />
             </Col>
           </Row>
