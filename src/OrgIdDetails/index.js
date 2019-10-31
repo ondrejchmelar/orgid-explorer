@@ -74,6 +74,7 @@ class OrgIdDetails extends Component {
       environment, markers, lifDepositValue,
     } = this.state;
     const { id } = this.props.match.params;
+    console.log(environment);
     return (
       <>
         <Header />
@@ -98,15 +99,17 @@ class OrgIdDetails extends Component {
             : <Row className="my-1">
                 <Col md={6} sm={12}>
                   {orgData ? <OrgIdDescription orgData={orgData} name={name}/> : null}
-                  {legalEntity ? <Owner 
-                    name={legalEntity.name}
-                    address={legalEntity.address}
-                    city={legalEntity.city}
-                    countryCode={legalEntity.countryCode}
-                    contact={legalEntity.contact}
-                    id={owner}
-                    environment={environment}
-                  /> : null}
+                  {legalEntity ? 
+                    <Owner 
+                      name={legalEntity.name}
+                      address={legalEntity.address}
+                      city={legalEntity.city}
+                      countryCode={legalEntity.countryCode}
+                      contact={legalEntity.contact}
+                      id={owner}
+                      environment={environment}
+                    /> : null
+                  }
                 </Col>
                 <Col md={6} sm={12} className={`${styles['fixedh-600']}`}>
                   <LocationMap markers={markers} center={markers[0] ? markers[0].position : [0,0]}/>

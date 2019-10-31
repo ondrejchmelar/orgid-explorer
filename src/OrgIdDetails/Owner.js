@@ -9,19 +9,19 @@ const Owner = ({
     countryCode,
     houseNumber,
     road,
-    environment,
   },
   contact,
   id,
+  environment,
 }) => (
-  <Container>
-    <h2>Owner:</h2>
+  <Container className="mt-2">
+    <h2>Owner</h2>
     <p>{name}</p>
     <p>{road} {houseNumber} {city} {countryCode}</p>
     {id ?
       <p>
         <a 
-          href={`https://${environment === 'mainnet' ? '' : 'ropsten.'}etherscan.io/address/${id}`}
+          href={`https://${environment === 'madrid' ? 'ropsten.' : ''}etherscan.io/address/${id}`}
           className={`btn-link ${styles['dont-break-out']}`}
           target="_blank"
           rel="noopener noreferrer"
