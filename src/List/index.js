@@ -37,6 +37,7 @@ class List extends Component {
       selectedEnvironment: 'mainnet',
       organizationsData: [],
       markers: undefined,
+      totalCount: 0,
     };
   }
 
@@ -109,12 +110,14 @@ class List extends Component {
 
   async componentDidMount() {
     try {
-      const qs = this.prepareQS();
+      let qs = this.prepareQS();
+      qs += `&limit=10&offset=0`;
+
       const response = await fetch(`${config.API_URI}/organizations?${qs}`)
-      const { items } = await response.json();
+      const { items, totalCount } = await response.json();
       const organizationsData = items.map(this.parseOrgData);
       const markers = this.parseMarkers(items);
-      this.setState({ organizationsData, markers });
+      this.setState({ organizationsData, markers, totalCount:parseInt(totalCount) });
     } catch (e) {
       console.log(e);
       //
@@ -124,13 +127,14 @@ class List extends Component {
   onApply = async (e) => {
     e.preventDefault();
 
-    const qs = this.prepareQS();
+    let qs = this.prepareQS();
+    qs += `&limit=10&offset=0`;
     try {
       const response = await fetch(`${config.API_URI}/organizations?${qs}`);
-      const { items } = await response.json();
+      const { items, totalCount } = await response.json();
       const organizationsData = items.map(this.parseOrgData);
       const markers = this.parseMarkers(items);
-      this.setState({ organizationsData, markers });
+      this.setState({ organizationsData, markers, totalCount:parseInt(totalCount) });
     } catch (e) { 
       console.log(e)
     }
@@ -152,16 +156,40 @@ class List extends Component {
     return qs;
   }
 
+  onPageChange = async (page, sizePerPage) => {
+    let qs = this.prepareQS();
+    qs += `&limit=${sizePerPage}&offset=${sizePerPage * (page - 1)}`;
+    try {
+      const response = await fetch(`${config.API_URI}/organizations?${qs}`);
+      const { items, totalCount } = await response.json();
+      const organizationsData = items.map(this.parseOrgData);
+      const markers = this.parseMarkers(items);
+      this.setState({ organizationsData, markers, totalCount:parseInt(totalCount) });
+    } catch (e) { 
+      console.log(e)
+    }
+  }
+
   render() {
     const { 
       startDate, endDate, selectedDirectory, organizationsData, inputValue, markers,
-      selectedEnvironment, 
+      selectedEnvironment, totalCount,
     } = this.state;
+
     const tableOptions = {
       sortName: this.state.sortName,
       sortOrder: this.state.sortOrder,
       onSortChange: this.onSortChange,
-      noDataText: 'No data to display'
+      noDataText: 'No data to display',
+      sizePerPage: 10,
+      sizePerPageList: [ 10 ], 
+      pageStartIndex: 1, 
+      prePage: 'Prev',
+      nextPage: 'Next',
+      firstPage: 'First',
+      lastPage: 'Last',
+      paginationShowsTotal: true,
+      onPageChange: this.onPageChange,
     }
     return (
       <>
@@ -190,7 +218,10 @@ class List extends Component {
             version='4'
             striped
             hover 
-            pagination>
+            pagination
+            fetchInfo={{dataTotalSize: totalCount}}
+            remote={true}
+            >
               <TableHeaderColumn
                   dataAlign='center'
                   isKey={true}

@@ -12,7 +12,7 @@ const InvalidOrgId = ({ id }) => (
   </div>
 )
 
-const MainDescription = ({ directory, id, created, updated }) => {
+const MainDescription = ({ directory, id, created, updated, environment, lifDepositValue }) => {
   if (!created) return <InvalidOrgId id={id} />
   const baseDate = new Date();
   const directories = directory.split(',');
@@ -28,7 +28,8 @@ const MainDescription = ({ directory, id, created, updated }) => {
     }
     </h3>
     <h2 className={`${styles['dont-break-out']}`}>{id}</h2>
-    <p>Created {formatDistance(new Date(created), baseDate)} ago, updated {formatDistance(new Date(updated), baseDate)} ago</p>
+    <p>Created in {environment} {formatDistance(new Date(created), baseDate)} ago, updated {formatDistance(new Date(updated), baseDate)} ago</p>
+    <h3>Líf deposit value: {lifDepositValue}</h3>
   </div>
 )};
 
