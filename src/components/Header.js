@@ -6,7 +6,9 @@ const Header = () => (
   <div id="app-header">
     <nav className="navbar navbar-expand-lg navbar-light" id="navbar">
       <div className="container">
-        <a className="navbar-brand mr-2" href="https://windingtree.com/">Winding Tree</a>
+        <LinkContainer to='/'>
+          <a className="navbar-brand mr-2">Winding Tree</a>
+        </LinkContainer> 
         <a 
           href='https://windingtree.com/'
           className='nav-link'
