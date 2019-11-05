@@ -9,6 +9,7 @@ REACT_APP_GOOGLE_API_KEY=SomeGoogleApiKey
 
 ### Run local
 * Run [orgid-explorer-cache](https://github.com/windingtree/orgid-explorer-cache)
+* `npm install`
 * `npm start`
 
 ## Requirements
